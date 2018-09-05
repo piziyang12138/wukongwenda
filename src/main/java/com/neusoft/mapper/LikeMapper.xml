@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neusoft.mapper.LikeMapper">
+
+    <select id="queryAllLikes" parameterType="int" resultType="Long">
+        select commentid from likeorunlike where userid = #{value} AND islike = 1
+    </select>
+
+    <select id="queryAllUnLikes" parameterType="int" resultType="Long">
+        select commentid from likeorunlike where userid = #{value} AND islike = 0
+    </select>
+    <select id="likeCount" parameterType="int" resultType="int">
+        SELECT count(*) FROM likeorunlike WHERE commentid = #{value} AND islike=1
+    </select>
+    <select id="unlikeCount" parameterType="int" resultType="int">
+        SELECT count(*) FROM likeorunlike WHERE commentid = #{value} AND islike=0
+    </select>
+    <select id="isLiked" parameterType="Likeorunlike" resultType="Likeorunlike">
+        select * from likeorunlike where userid = #{userid} and commentid=#{commentid} and islike=#{islike}
+    </select>
+    <delete id="delLike" parameterType="Likeorunlike">
+        delete from likeorunlike where userid = #{userid} and commentid=#{commentid} and islike=#{islike}
+    </delete>
+    <insert id="addLike" parameterType="Likeorunlike">
+        insert into likeorunlike(commentid, userid, islike) values (#{commentid},#{userid},#{islike})
+    </insert>
+</mapper>

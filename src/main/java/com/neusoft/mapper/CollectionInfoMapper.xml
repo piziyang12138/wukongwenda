@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neusoft.mapper.CollectionInfoMapper">
+    <insert id="addCollection" parameterType="CollectionInfo">
+        insert into collection(userid,articleid) values(#{userid},#{articleid})
+    </insert>
+
+    <select id="hasCollected" resultType="CollectionInfo" parameterType="CollectionInfo">
+        select * FROM collection where userid = #{userid} AND articleid = #{articleid}
+    </select>
+    <delete id="delCollection" parameterType="CollectionInfo">
+        DELETE FROM collection where userid = #{userid} AND articleid = #{articleid}
+    </delete>
+    <select id="countCollection" parameterType="int" resultType="int">
+        SELECT count(*) FROM collection WHERE articleid = #{value}
+    </select>
+</mapper>

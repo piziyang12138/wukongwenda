@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neusoft.mapper.ArticleMapper">
+    <insert id="addArticle" parameterType="Article">
+        <selectKey keyProperty="aid" order="AFTER" resultType="long">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into article(title,userid,content,picpath) values(#{title},#{userid},#{content},#{picpath})
+    </insert>
+
+    <select id="queryArticleByPage" parameterType="String" resultType="Map">
+        SELECT (select count(*) FROM collection where articleid = aid) as collection_count,article.*,commentinfo.chtml,(SELECT count(*) FROM commentinfo WHERE articleid = aid) AS rescount,
+        `user`.username,`user`.picpath as upicpath,commentinfo.userid as comment_userid,commentinfo.cid,
+        (select count(*) from likeorunlike where commentid = cid and islike=1) as likecount,
+        (select count(*) from likeorunlike where commentid = cid and islike=0) as unlikecount
+        FROM article
+        LEFT JOIN commentinfo ON article.aid = commentinfo.articleid
+        LEFT JOIN user ON commentinfo.userid = user.id
+        Left join articlecategory on article.aid = articlecategory.articleid
+		where articlecategory.category = #{value}
+        GROUP BY aid order BY aid DESC LIMIT 0,8
+    </select>
+    <select id="queryArticleByAid" parameterType="int" resultType="ArticleInfo">
+        select article.*,(select count(*) FROM collection where articleid = aid) as collection_count from article WHERE aid = #{value}
+    </select>
+    <select id="getMoreArticle" parameterType="Map" resultType="Map">
+        SELECT article.*,commentinfo.chtml,
+        `user`.username,`user`.picpath AS upicpath,commentinfo.userid AS comment_userid,commentinfo.cid
+        FROM article
+        LEFT JOIN commentinfo ON article.aid = commentinfo.articleid
+        -- left JOIN user ON commentinfo.userid = user.id 这个语句会把没有评论的也查出来
+        JOIN user ON commentinfo.userid = user.id
+        join articlecategory on article.aid = articlecategory.articleid
+        WHERE aid &lt; #{aid} and articlecategory.category = #{category}
+        GROUP BY aid ORDER BY aid DESC LIMIT 0,8
+    </select>
+    <select id="getArticleByAid" parameterType="int" resultType="map">
+        SELECT article.*,commentinfo.chtml,
+        `user`.username,`user`.picpath AS upicpath,commentinfo.userid AS comment_userid,commentinfo.cid
+        FROM article
+        LEFT JOIN commentinfo ON article.aid = commentinfo.articleid
+        left JOIN user ON commentinfo.userid = user.id
+        join articlecategory on article.aid = articlecategory.articleid
+        WHERE aid = #{value}
+        GROUP BY aid
+    </select>
+
+    <select id="getHotArticle" resultType="map">
+        select article.aid,article.title,commentinfo.chtml,user.username,user.picpath,user.id,commentid , count(*) as num from likeorunlike
+        join commentinfo on cid = commentid
+        join article on articleid = aid
+        join user on commentinfo.userid = id
+        where islike = 1
+        group by commentid order by num DESC LIMIT 0,3
+    </select>
+</mapper>

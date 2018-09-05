@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="layer/jquery-3.3.1.min.js"></script>
+    <script src="layer/layer.js"></script>
+    <script>
+        window.onload = function () {
+            $('#test2').on('click', function(){
+                layer.open({
+                    type: 1,
+                    area: ['600px', '360px'],
+                    shadeClose: true, //点击遮罩关闭
+                    content: '\<\div style="padding:20px;">自定义内容\<\/div>'
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+<button id="test2">弹出自定义内容</button>
+</body>
+</html>

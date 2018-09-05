@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neusoft.mapper.FollowerMapper">
+    <select id="isFollowed" parameterType="Follower" resultType="Follower">
+        select * FROM follower where followid = #{followid} AND followedid = #{followedid}
+    </select>
+
+    <delete id="delFollower" parameterType="Follower">
+        DELETE FROM follower where followid = #{followid} AND followedid = #{followedid}
+    </delete>
+
+    <select id="queryAllFollower" parameterType="int" resultType="Integer">
+        select followedid from follower where followid = #{value}
+    </select>
+
+    <insert id="addFollower" parameterType="Follower">
+        insert into follower(followid,followedid) values(#{followid},#{followedid})
+    </insert>
+    <select id="queryFollowedCount" parameterType="int" resultType="int">
+        select count(*) from follower where followedid = #{value}
+    </select>
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neusoft.mapper.CommentInfoMapper">
+
+    <insert id="addComment" parameterType="commentinfo">
+        <selectKey keyProperty="cid" order="AFTER" resultType="long">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into commentinfo(userid,content,articleid,chtml) values(#{userid},#{content},#{articleid},#{chtml})
+    </insert>
+    <select id="queryCommentByAid" parameterType="int" resultType="Map">
+        SELECT commentinfo.*,`user`.picpath,`user`.username,likeorunlike.*,(SELECT count(*) FROM likeorunlike WHERE commentid = cid AND islike=1) AS likecount,
+        (SELECT count(*) FROM likeorunlike WHERE commentid = cid AND islike=0) AS unlikecount
+         FROM commentinfo
+        LEFT JOIN `user` ON commentinfo.userid = `user`.id
+        LEFT JOIN likeorunlike ON commentinfo.cid = likeorunlike.commentid
+        WHERE articleid = #{value}
+        order by cid desc
+    </select>
+
+    <select id="queryCommentInfoById" parameterType="int" resultType="Map">
+        select article.aid,article.title,commentinfo.chtml ,(select count(*) from commentinfo WHERE articleid = aid) as count FROM commentinfo
+        join article on commentinfo.articleid = article.aid
+        where commentinfo.userid = #{value}
+    </select>
+
+    <select id="AnswerCount" parameterType="int" resultType="int">
+        SELECT count(*) FROM commentinfo WHERE articleid = #{value}
+    </select>
+    <select id="getOneComment" parameterType="int" resultType="map">
+        select commentinfo.*,user.username from commentinfo
+        join user on commentinfo.userid = user.id
+        where commentinfo.articleid = #{value} group by articleid
+    </select>
+</mapper>
