@@ -13,11 +13,12 @@ function mouseout(e) {
 
 function like(e) {
     var cid = e.previousElementSibling.value;
+    var aid = $('input[type=hidden]').val();
     var req = new XMLHttpRequest();
     req.open('post', contextPath + '/like/admin/like', true);
     req.setRequestHeader("request-with", 'ajax');
     req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    req.send('cid=' + cid + '&islike=1');
+    req.send('cid=' + cid + '&islike=1'+'&aid='+aid);
     req.onload = function () {
         if (req.getResponseHeader('redirect') !== null) {
             window.location.href = contextPath + req.getResponseHeader('redirect');

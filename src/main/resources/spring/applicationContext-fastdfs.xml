@@ -23,10 +23,12 @@
       </bean>
     </property>
     <!--tracker的配置 ","逗号分隔-->
+    <!--<property name="tracker_servers" value="192.168.230.133:22122"/>-->
     <property name="tracker_servers" value="172.18.102.156:22122"/>
     <!--HTTP访问服务的端口号-->
     <property name="g_tracker_http_port" value="80"/>
     <!--nginx的对外访问地址，如果没有端口号，将取g_tracker_http_port配置的端口号 ","逗号分隔-->
+    <!--<property name="nginx_address" value="192.168.230.133"/>-->
     <property name="nginx_address" value="120.79.237.11"/>
   </bean>
 
